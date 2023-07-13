@@ -5,6 +5,15 @@ class User(AbstractUser):
     pass
 
 class Listing(models.Model):
+    CATEGORIES = [
+        ('ARTS','Art & Collectibles'),
+        ('FOOD','Food & Beverages'), 
+        ('DYI','DYI'), 
+        ('GAME','Games & entertainment'), 
+        ('HOME','Home'), 
+        ('CLOTH','Clothing'), 
+        ('MISC','Miscellaneous'),
+    ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=30)
     description = models.CharField(max_length=200)
@@ -14,9 +23,6 @@ class Listing(models.Model):
     date_listed = models.DateTimeField()
     bids_count = models.IntegerField(blank=True)
     open = models.BooleanField(default=True)
-    CATEGORIES = [
-        ('Art and Collectibles'), ('Food and Beverages'), ('DYI'), ('Games and entertainment'), ('Home'), ('Clothing'), ('Miscellaneous')
-        ]
     category = models.CharField(max_length=30, blank=True, choices=CATEGORIES)
 
         

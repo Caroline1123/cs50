@@ -53,7 +53,7 @@
         <li>Listed by: {{listing.user}}</li>
         <li>Category: 
             {%if listing.category %}
-                {{listing.category}}
+                {{listing.get_category_display}}
             {% else %}
                 No registered category 
             {% endif %}

@@ -6,9 +6,15 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ("user",'comment', "listing_id", "date_posted")
 
 class ListingAdmin(admin.ModelAdmin):
-    ...
+    list_display = ('id', 'title', 'winning_bid', 'bids_count','category', 'open', )
 
-admin.site.register(User)
-admin.site.register(Listing)
-admin.site.register(Bid)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ("id", "username", "email")
+
+class BidAdmin(admin.ModelAdmin):
+    list_display = ("user", "amount", "listing_id")
+
+admin.site.register(User, UserAdmin)
+admin.site.register(Listing, ListingAdmin)
+admin.site.register(Bid, BidAdmin)
 admin.site.register(Comment, CommentAdmin)
