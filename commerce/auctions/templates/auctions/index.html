@@ -1,0 +1,30 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    {% for listing in listings %}
+        {% if listing.open == True %}
+            <table class="item">
+                <tr>
+                    <td class="left_view">
+                        {% if not listing.image %}
+                            <img src='https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930'  alt="Item" id="item_image">
+                        {% else %}
+                            <img src={{listing.image}}  alt="Item" id="item_image">
+                        {% endif %}
+                    </td>
+                    <td class="right_view">
+                        <a href="{% url 'view_listing' listing.id %}"><h2>{{ listing.title }}</h2></a>
+                        {{ listing.description }}<br><br>
+                        <div class="price">
+                            Price: ${{ listing.winning_bid|floatformat:2 }}
+                        </div><br>
+                        <div class="date">
+                            Created {{listing.date_listed }}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

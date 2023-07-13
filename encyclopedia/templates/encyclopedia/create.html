@@ -1,0 +1,20 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Create
+{% endblock %}
+
+{% block body %}
+    <h2>Create a new entry: </h2><br>
+        <form action="{% url 'create' %}" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="new_entry">
+                    {{ field.label_tag }} <br>
+                    {{ field}}
+                </div>
+            {% endfor %}
+            <input type="submit">
+        </form>
+    </div>
+{% endblock %}

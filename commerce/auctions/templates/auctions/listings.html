@@ -1,0 +1,93 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+    <h2>Listing: {{ listing.title }}</h2>
+    <div class="image_block">
+        {% if not listing.image %}
+            <img src='https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930'  alt="Item">
+        {% else %}
+            <img src={{listing.image}}  alt="Item">
+        {% endif %}
+    </div><br>
+    {{ listing.description }}<br>
+    <p class="pricetag">
+        ${{ listing.winning_bid|floatformat:2 }}
+    </p>
+    {% if listing.open == True %}
+        <p class="bid_status">
+            {% if not user.is_authenticated %}
+                You are not logged in. <a href="{% url 'login' %}">Login</a> or <a href="{% url 'register' %}">register</a> to place a bid.
+            {% elif user.username == listing.user.username %}
+                Your auction has had {{ listing.bids_count }} bid(s) so far.
+            {% elif listing.bids_count == 0 %}
+                No bids yet, be the first!          
+            {% else %}
+                {{ listing.bids_count }} bid(s) so far. 
+                {% if bid.user.username == user.username %}
+                    You are currently the highest bidder.
+                {% endif %}
+            {% endif %}
+        </p>
+        {% if user.is_authenticated and user.username != listing.user.username and user.username != bid.user.username %}
+            <form action="{% url 'bid' listing.id%}" method="post"> 
+                {% csrf_token %}
+                <input type="number" step="0.01" placeholder="$ Bid" name="amount" required="required" min="{{ listing.winning_bid }}">  <input class="btn btn-primary" type="submit" value="Place Bid">
+            </form>
+        {% endif %}
+    {% else %}
+        The bids for this auction are closed. 
+        {% if bid.user.username == user.username %} 
+            You are the winner, <b>congratulations!</b>
+        {% endif %}
+    {% endif %}
+    {% if user.is_authenticated %}
+        {% if watchlist.exists %}
+            <a href="{% url 'remove_watchlist' listing.id %}"><input class="btn btn-primary" type="submit" value="Remove from Watchlist"></a>
+        {% else %}
+            <a href="{% url 'add_watchlist' listing.id %}"><input class="btn btn-primary" type="submit" value="Add to Watchlist"></a>
+        {% endif %}
+    {% endif %}
+    <br><br>
+    <h3>Details:</h3>
+    <ul>
+        <li>Listed by: {{listing.user}}</li>
+        <li>Category: 
+            {%if listing.category %}
+                {{listing.category}}
+            {% else %}
+                No registered category 
+            {% endif %}
+        </li>
+    </ul>
+    {% if user.username == listing.user.username and listing.open == True %}
+        <a href="{% url 'close_auction' listing.id %}"><input class="btn btn-primary" type="submit" value="Close Auction"></a>
+    {% endif %}
+    <br>
+    <h3>Comments:</h3>
+    {%if user.is_authenticated %}
+
+    <div class="fields">
+            <div class="field">
+                <form action="{% url 'add_comment' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="field">
+                        <label class="label">Comment: </label>
+                        <textarea class="input" placeholder="Leave your comment here" name="comment" rows="4" cols="50"></textarea>
+                    </div>
+                    <input id= "comment" class="btn btn-primary" type="submit" value="Add Comment">
+                </form><br>
+                </div></div></div>
+    {% endif %}
+    {% if comments.exists %}
+        {% for comment in comments %}
+            <p class="comment_header">
+                <b>{{comment.user}}</b> commented on {{comment.date_posted}}:
+            </p>
+            <p class="comment">
+                {{comment.comment}}
+            </p><hr>
+        {% endfor %}
+    {% else %}
+        No comments were made for this auction.
+    {% endif %}
+{% endblock %}

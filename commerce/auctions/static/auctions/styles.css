@@ -1,0 +1,62 @@
+body {
+    padding: 10px;
+}
+
+.create_listing {
+    margin:auto;
+}
+
+.fields {
+    display:block;
+}
+
+.field {
+    width:100%;
+    display:inline-block;
+    margin-bottom: 10px;
+}
+
+.label {
+    width:10%;
+    float:left;
+}
+
+.item {
+    display:block;
+    border:2px solid rgb(211, 204, 204);
+    padding:10px;
+    margin-bottom:10px;
+}
+
+.item td {
+    padding-left:30px;
+}
+
+#item_image {
+    max-height:300px;
+    height:auto;
+    width:200px;
+    align-items:center;
+}
+
+.price {
+    font-weight:bold;
+}
+
+.date {
+    color:grey;
+    font-size:12px;
+}
+
+.image_block img {
+    width:auto;
+    max-height:400px;
+}
+
+.pricetag {
+    font-weight:bold;
+    font-size:25px;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
