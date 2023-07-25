@@ -60,3 +60,8 @@ body {
     margin-bottom:10px;
 }
 
+#close {
+    margin-left:10px;
+    background-color: rgb(173, 45, 45);
+    border-color:rgb(173, 45, 45);
+}

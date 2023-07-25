@@ -39,6 +39,7 @@
         {% if bid.user.username == user.username %} 
             You are the winner, <b>congratulations!</b>
         {% endif %}
+        <br>
     {% endif %}
     {% if user.is_authenticated %}
         {% if watchlist.exists %}
@@ -46,6 +47,9 @@
         {% else %}
             <a href="{% url 'add_watchlist' listing.id %}"><input class="btn btn-primary" type="submit" value="Add to Watchlist"></a>
         {% endif %}
+    {% endif %}
+    {% if user.username == listing.user.username and listing.open == True %}
+        <a href="{% url 'close_auction' listing.id %}"><input class="btn btn-primary" type="submit" value="Close Auction" id="close"></a>
     {% endif %}
     <br><br>
     <h3>Details:</h3>
@@ -59,24 +63,15 @@
             {% endif %}
         </li>
     </ul>
-    {% if user.username == listing.user.username and listing.open == True %}
-        <a href="{% url 'close_auction' listing.id %}"><input class="btn btn-primary" type="submit" value="Close Auction"></a>
-    {% endif %}
-    <br>
     <h3>Comments:</h3>
     {%if user.is_authenticated %}
-
-    <div class="fields">
-            <div class="field">
-                <form action="{% url 'add_comment' listing.id %}" method="post">
-                    {% csrf_token %}
-                    <div class="field">
-                        <label class="label">Comment: </label>
-                        <textarea class="input" placeholder="Leave your comment here" name="comment" rows="4" cols="50"></textarea>
-                    </div>
-                    <input id= "comment" class="btn btn-primary" type="submit" value="Add Comment">
-                </form><br>
-                </div></div></div>
+    <div class="comments">
+        <form action="{% url 'add_comment' listing.id %}" method="post">
+            {% csrf_token %}
+            <textarea class="input" placeholder="Leave your comment here" name="comment" rows="4" cols="50"></textarea><br>
+            <input id= "comment" class="btn btn-primary" type="submit" value="Add Comment">
+        </form><br>
+    </div>
     {% endif %}
     {% if comments.exists %}
         {% for comment in comments %}

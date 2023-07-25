@@ -148,14 +148,14 @@ def add_watchlist(request, listing_id):
     watchlist = Watchlist.objects.create(user=request.user,
                                         listings=listing)
     watchlist.save()
-    return HttpResponseRedirect(reverse("watchlist"))
+    return HttpResponseRedirect(reverse("view_listing", args=[listing_id]))
     
 @login_required
 def remove_watchlist(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     watchlist = Watchlist.objects.filter(user=request.user).filter(listings=listing)
     watchlist.delete()
-    return HttpResponseRedirect(reverse("watchlist"))
+    return HttpResponseRedirect(reverse("view_listing", args=[listing_id]))
 
 @login_required
 def watchlist(request):
