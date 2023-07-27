@@ -1,3 +1,30 @@
 textarea {
     min-height: 400px;
 }
+
+#emails-view {
+    display: inline-block;
+}
+
+.view-email {
+    box-shadow: 
+    1px 0 0 0 black, 
+    0 1px 0 0 black, 
+    1px 1px 0 0 black,
+    1px 0 0 0 black inset, 
+    0 1px 0 0 black inset;
+}
+
+.view-email div{
+    display:inline-block;
+    padding: 1px 7px 1px 7px;
+    pointer-events: none;
+}
+.sender {
+    font-weight:bold;
+}
+
+.timestamp {
+    float:right;
+    color:rgb(152, 152, 152);
+}
