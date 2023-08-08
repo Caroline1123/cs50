@@ -119,3 +119,5 @@ def show_user(request, username):
             "error": "GET request required."
         }, status=400)
     
+def users_view(request):
+    return render(request,"network/users.html")

@@ -39,7 +39,7 @@ function load_posts() {
         ViewPost.setAttribute("id", "view-post");
         // Inject display fields of the post to page
         ViewPost.innerHTML = `
-        <div class="user"><a href="#" onclick="show_profile('${post.user}')"> ${post.user}</a></div>
+        <div class="user"><a href="{% url 'users' %}" onclick="show_profile('${post.user}')"> ${post.user}</a></div>
         <div class="edit">Edit</div>
         <div class="text">${post.text}</div>
         <div class="timestamp">${post.timestamp}</div>
