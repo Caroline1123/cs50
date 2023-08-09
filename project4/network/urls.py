@@ -1,3 +1,4 @@
+
 from django.urls import path
 
 from . import views
@@ -8,7 +9,8 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
 
-    # API paths
-    path("posts", views.create_post, name="create_post"),
-    path("users/<str:username>", views.show_user, name="show_user"),
+    path("create_post", views.create_post, name="create_post"),
+    path("users/<int:user_id>", views.view_profile, name="view_profile"),
+    path("follow/<int:profile_user_id>", views.follow, name="follow"),
+    path("unfollow/<int:profile_user_id>", views.unfollow, name="unfollow"),
 ]

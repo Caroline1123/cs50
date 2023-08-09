@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
   
-  // Add send function to compose form's submit button
+  // Use submit button to send email
   document.querySelector('#compose-form').onsubmit = send_email;
 
   // By default, load the inbox
@@ -27,6 +27,7 @@ function compose_email() {
 }
 
 function load_mailbox(mailbox) {
+  // Retrieve all emails for the selected mailbox
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
   .then(emails => {
@@ -35,14 +36,17 @@ function load_mailbox(mailbox) {
       emails.forEach(email => {
         const ViewEmail = document.createElement('div');
         ViewEmail.setAttribute("class", "view-email");
+        // Inject display fields of emails to page
         ViewEmail.innerHTML = `
         <div class="sender">${email.sender}</div>
         <div class="subject">${email.subject}</div>
         <div class="timestamp">${email.timestamp}</div>
         `;
+        // Add grey background on read emails
         if (email.read === true) {
           ViewEmail.style.backgroundColor = "rgb(240, 240, 240)";
         }
+        // When user clicks on an email, show details of the selected email
         ViewEmail.addEventListener('click', () => view_email(email.id, mailbox));
         document.querySelector('#emails-view').append(ViewEmail);
       })
@@ -74,15 +78,15 @@ function send_email() {
   })
   .then(response => response.json())
   .then(result => {
-      // Redirect to sent mailbox
+      // Redirect user to sent mailbox after sending an email
       console.log(result);
       load_mailbox('sent');
   });
-  // Return false to prevent default submissions of form
+  // Return false to prevent default submissions of compose form
   return false;
 }
 
-// Displays details of the selected email and sets read status
+// Displays details of selected email and sets 'read' status
 function view_email(id, mailbox) {
   // Set email status to "read"
   fetch(`/emails/${id}`, {
@@ -91,7 +95,7 @@ function view_email(id, mailbox) {
       read: true
     })
   })
-  // Pass on all info about the mails to the page
+  // Pass on all info about the mail to the webpage
   fetch(`/emails/${id}`)
     .then(response => response.json())
     .then(email => {
@@ -103,11 +107,11 @@ function view_email(id, mailbox) {
         <button class="btn btn-sm btn-outline-primary" id="reply">Reply</button>
         <button class="btn btn-sm btn-outline-primary" id="un-archive" hidden>Archive</button>
         <hr>
-        ${email.body}
+        ${email.body.replace(/\n/g, "<br />")}
       `;
-      // Add event listener to reply button
+      // Use reply button to reply the current email
       document.querySelector("#reply").addEventListener('click', () => reply(id));
-      // Add event listener to un-archive button
+      // Use un-archive button to archive or unarchive an email
       let archiveButton = document.querySelector("#un-archive");
       archiveButton.addEventListener('click', () => archive(id));
       // Check if the selected email is in the inbox
@@ -148,7 +152,9 @@ function archive(id) {
 }
 
 function reply(id) {
+  // Show compose email form
   compose_email()
+  // Inject the recipients, subject and body of original mail
   fetch(`/emails/${id}`)
     .then(response => response.json())
     .then(email => {

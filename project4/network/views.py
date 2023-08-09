@@ -1,20 +1,19 @@
-import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
 
-
+from .models import User, Post, Following
 from .forms import PostForm
-from .models import User, Post
 
 
 def index(request):
+    posts = Post.objects.all().order_by("-timestamp").all()
     return render(request, "network/index.html", {
-        "form" : PostForm()
+        "form": PostForm,
+        "posts" : posts,
     })
 
 
@@ -68,56 +67,56 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
-    
 
-@csrf_exempt
 @login_required
 def create_post(request):
-    # Composing a new post must be done via POST
     if request.method == "POST":
-        data = json.loads(request.body)
-        text = data.get("text", "")
+        text = request.POST["text"]
+        # Check that the post is not an empty string
         if text == "":
-            return JsonResponse({
-                "error": "No text found."
-            }, status=400)
-        # Create post
+            # TO CHANGE :
+            return HttpResponse("Cannot create an empty post!")
+        # Create new post object
         user = request.user
         post = Post(
             user=user,
-            text=text,
+            text=text
         )
         post.save()
-        return JsonResponse({"message": "Post sent successfully."}, status=201)
-    # Show all posts when method is GET
-    else : 
-        posts = Post.objects.all().order_by("-timestamp").all()
-        return JsonResponse([post.serialize() for post in posts], safe=False)
+    return HttpResponseRedirect(reverse("index"))
 
 
-@csrf_exempt
-@login_required
-def show_user(request, username):
-    # Query for requested user
+def view_profile(request, user_id):
+    user = User.objects.get(pk=user_id)
+    following = Following.objects.filter(user=user_id).count()
+    followers = Following.objects.filter(followed_users=user_id).count()
     try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        return JsonResponse({"error": "User not found."}, status=404)
+        follow = Following.objects.get(user=request.user, followed_users=user)
+        is_following = True
+    except Following.DoesNotExist:
+        is_following = False
+    user_posts = Post.objects.filter(user=user).order_by("-timestamp").all()
+    return render(request, "network/users.html", {
+        "user": user,
+        "posts": user_posts,
+        "following": following,
+        "followers": followers,
+        "is_following": is_following
+    })
 
-    # Return user details
-    if request.method == "GET":
-        user_details = {
-            "username": user.username,
-            "last_login" : user.last_login,
-            "date_joined" : user.date_joined,
-        }
-        return JsonResponse(user_details)
+@login_required
+def follow(request, profile_user_id):
+    profile_user = User.objects.get(pk=profile_user_id)
+    follow = Following(
+        user=request.user,
+        followed_users=profile_user
+    )
+    follow.save()
+    return HttpResponseRedirect(reverse("view_profile", args=[profile_user_id]))
 
-    # User must be via GET
-    else:
-        return JsonResponse({
-            "error": "GET request required."
-        }, status=400)
-    
-def users_view(request):
-    return render(request,"network/users.html")
+@login_required
+def unfollow(request, profile_user_id):
+    profile_user = User.objects.get(pk=profile_user_id)
+    follow = Following.objects.filter(user=request.user, followed_users=profile_user)
+    follow.delete()
+    return HttpResponseRedirect(reverse("view_profile", args=[profile_user_id]))

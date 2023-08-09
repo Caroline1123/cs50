@@ -2,14 +2,27 @@
 
 {% block body %}
     <h1>All Posts</h1>
-    <form method = "post" id="create-post">
-        <h5>New Post</h5>
-        <div id="new-post">
-            {% csrf_token %}
-            {{ form }}
+    {% if user.is_authenticated %}
+        <form method = "post" id="create-post" action="{% url 'create_post' %}">
+            <h5>New Post</h5>
+            <div id="new-post">
+                {% csrf_token %}
+                {{ form }}
+            </div>
+            <br>
+            <button class="btn btn-primary" type="submit" id="send-post">Post</button>
+        </form>
+    {% endif %}
+    <div id = view-posts>
+        {% for post in posts %}
+        <div id = post-details>
+            <a style="text-decoration:none" href="{% url 'view_profile' post.user.id %}"><div class="username">{{ post.user.username}}</div></a>
+            <div class="edit">Edit</div>
+            <div class="text">{{ post.text|linebreaks}}</div>
+            <div class="timestamp">{{ post.timestamp}}</div>
+            <div class="likes">&#10084; {{ post.likes}}</div>
+            <div class="comment">Comment</div>
         </div>
-        <button class="btn btn-primary" type="submit" id="send-post">Post</button>
-    </form>
-    <div id="post-view">
+        {% endfor %}
     </div>
 {% endblock %}

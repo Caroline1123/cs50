@@ -1,5 +1,23 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    <h1>Profile</h1>
+    <h1>{{profile_user.username}}</h1>
+    <div>{{followers}} Follower(s) | {{following}} Following</div>
+    {% if request.user.is_authenticated and request.user != profile_user %}
+        {% if not is_following %}
+            <a href="{% url 'follow' user_id=profile_user.id %}">Follow</a>
+        {% else %}
+           <a href="{% url 'unfollow' user_id=profile_user.id %}">Unfollow</a>
+        {% endif %}
+    {% endif %}
+    {% for post in posts %}
+    <div id = post-details>
+        <div class="username">{{ post.user.username}}</div>
+        <div class="edit">Edit</div>
+        <div class="text">{{ post.text|linebreaks}}</div>
+        <div class="timestamp">{{ post.timestamp}}</div>
+        <div class="likes">&#10084; {{ post.likes}}</div>
+        <div class="comment">Comment</div>
+    </div>
+    {% endfor %}
 {% endblock %}
