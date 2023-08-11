@@ -1,7 +1,7 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    <h1>All Posts</h1>
+    <h1>Following</h1>
     {% if user.is_authenticated %}
         <form method = "post" id="create-post" action="{% url 'create_post' %}">
             <h5>New Post</h5>
@@ -15,15 +15,12 @@
     {% endif %}
     <div id = view-posts>
         {% for post in page_obj %}
-            <div id = post-details>
-                <a href="{% url 'view_profile' post.user.id %}"><div class="username">{{ post.user.username}}</div></a>
-                {% if request.user == post.user %}
-                    <a href="{% url 'edit' post.id %}"><div class="edit">Edit</div></a>
-                {% endif %}
-                <div class="text">{{ post.text|linebreaks}}</div>
-                <div class="timestamp">{{ post.timestamp}}</div>
-                <div class="likes">&#10084; {{ post.likes}}</div>
-            </div>
+        <div id = post-details>
+            <a href="{% url 'view_profile' post.user.id %}"><div class="username">{{ post.user.username}}</div></a>
+            <div class="text">{{ post.text|linebreaks}}</div>
+            <div class="timestamp">{{ post.timestamp}}</div>
+            <div class="likes">&#10084; {{ post.likes}}</div>
+        </div>
         {% endfor %}
         {% include "network/pagination.html" %}
     </div>

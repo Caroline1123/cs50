@@ -5,19 +5,21 @@
     <div>{{followers}} Follower(s) | {{following}} Following</div>
     {% if request.user.is_authenticated and request.user != profile_user %}
         {% if not is_following %}
-            <a href="{% url 'follow' user_id=profile_user.id %}">Follow</a>
+            <a href="{% url 'follow' profile_user.id %}">Follow</a>
         {% else %}
-           <a href="{% url 'unfollow' user_id=profile_user.id %}">Unfollow</a>
+           <a href="{% url 'unfollow' profile_user.id %}">Unfollow</a>
         {% endif %}
     {% endif %}
-    {% for post in posts %}
+    {% for post in page_obj %}
     <div id = post-details>
         <div class="username">{{ post.user.username}}</div>
-        <div class="edit">Edit</div>
+        {% if request.user == post.user %}
+            <a href="{% url 'edit' post.id %}"><div class="edit">Edit</div></a> 
+        {% endif %}
         <div class="text">{{ post.text|linebreaks}}</div>
         <div class="timestamp">{{ post.timestamp}}</div>
         <div class="likes">&#10084; {{ post.likes}}</div>
-        <div class="comment">Comment</div>
     </div>
     {% endfor %}
+    {% include "network/pagination.html" %}
 {% endblock %}

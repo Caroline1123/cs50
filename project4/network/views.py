@@ -1,21 +1,28 @@
+import json
+from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 from .models import User, Post, Following
 from .forms import PostForm
 
 
 def index(request):
+    # Retrieve all posts and order them by date
     posts = Post.objects.all().order_by("-timestamp").all()
+    # Show 10 posts per page
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, "network/index.html", {
         "form": PostForm,
-        "posts" : posts,
+        "page_obj" : page_obj,
     })
-
 
 def login_view(request):
     if request.method == "POST":
@@ -96,27 +103,49 @@ def view_profile(request, user_id):
     except Following.DoesNotExist:
         is_following = False
     user_posts = Post.objects.filter(user=user).order_by("-timestamp").all()
+    paginator = Paginator(user_posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, "network/users.html", {
-        "user": user,
-        "posts": user_posts,
+        "profile_user": user,
+        "page_obj": page_obj,
         "following": following,
         "followers": followers,
         "is_following": is_following
     })
 
 @login_required
-def follow(request, profile_user_id):
-    profile_user = User.objects.get(pk=profile_user_id)
+def follow(request, user_id):
+    profile_user = User.objects.get(pk=user_id)
     follow = Following(
         user=request.user,
         followed_users=profile_user
     )
     follow.save()
-    return HttpResponseRedirect(reverse("view_profile", args=[profile_user_id]))
+    return HttpResponseRedirect(reverse("view_profile", args=[user_id]))
 
 @login_required
-def unfollow(request, profile_user_id):
-    profile_user = User.objects.get(pk=profile_user_id)
+def unfollow(request, user_id):
+    profile_user = User.objects.get(pk=user_id)
     follow = Following.objects.filter(user=request.user, followed_users=profile_user)
     follow.delete()
-    return HttpResponseRedirect(reverse("view_profile", args=[profile_user_id]))
+    return HttpResponseRedirect(reverse("view_profile", args=[user_id]))
+
+@login_required
+def following(request):
+    followed_users = Following.objects.filter(user=request.user).values_list('followed_users', flat=True)
+    posts = Post.objects.filter(user__in=followed_users).order_by("-timestamp")
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, "network/following.html", {
+        "page_obj":page_obj,
+        "form":PostForm,
+    })
+
+@login_required
+def edit(request, post_id):
+    if request.method == "POST":
+        
+        new_text = request.POST["text"]
+        post = Post.objects.get(pk = post_id).update(text = new_text)
