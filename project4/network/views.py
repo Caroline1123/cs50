@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -97,11 +97,13 @@ def view_profile(request, user_id):
     user = User.objects.get(pk=user_id)
     following = Following.objects.filter(user=user_id).count()
     followers = Following.objects.filter(followed_users=user_id).count()
-    try:
-        follow = Following.objects.get(user=request.user, followed_users=user)
-        is_following = True
-    except Following.DoesNotExist:
-        is_following = False
+    is_following = False
+    if request.user.is_authenticated:
+        try:
+            follow = Following.objects.get(user=request.user, followed_users=user)
+            is_following = True
+        except Following.DoesNotExist:
+            pass
     user_posts = Post.objects.filter(user=user).order_by("-timestamp").all()
     paginator = Paginator(user_posts, 10)
     page_number = request.GET.get('page')
@@ -143,9 +145,7 @@ def following(request):
         "form":PostForm,
     })
 
-@login_required
-def edit(request, post_id):
-    if request.method == "POST":
-        
-        new_text = request.POST["text"]
-        post = Post.objects.get(pk = post_id).update(text = new_text)
+def edit_view(request, post_id):
+    # Retrieve current text of the post 
+    post = Post.objects.get(pk = post_id)
+    return JsonResponse(post.serialize())

@@ -1,30 +1,35 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    <h1>All Posts</h1>
-    {% if user.is_authenticated %}
-        <form method = "post" id="create-post" action="{% url 'create_post' %}">
-            <h5>New Post</h5>
-            <div id="new-post">
-                {% csrf_token %}
-                {{ form }}
-            </div>
-            <br>
-            <button class="btn btn-primary" type="submit" id="send-post">Post</button>
+<h1>All Posts</h1>
+{% if user.is_authenticated %}
+<form method = "post" id="create-post" action="{% url 'create_post' %}">
+    <h5>New Post</h5>
+    <div id="new-post">
+        {% csrf_token %}
+        {{ form }}
+    </div>
+    <br>
+    <button class="btn btn-primary" type="submit" id="send-post">Post</button>
         </form>
-    {% endif %}
-    <div id = view-posts>
-        {% for post in page_obj %}
+        {% endif %}
+        <div id = view-posts>
+            {% for post in page_obj %}
             <div id = post-details>
                 <a href="{% url 'view_profile' post.user.id %}"><div class="username">{{ post.user.username}}</div></a>
                 {% if request.user == post.user %}
-                    <a href="{% url 'edit' post.id %}"><div class="edit">Edit</div></a>
+                <a href="{% url 'edit_view' post.id %}">
+                    <p data-bs-toggle="modal" data-bs-target="#EditModal" data-post-id="{{post.id}}" data-post-content="{{ post.text }}">
+                        Edit
+                    </p>
+                </a>
+                    {% include "network/edit.html" %}
                 {% endif %}
                 <div class="text">{{ post.text|linebreaks}}</div>
                 <div class="timestamp">{{ post.timestamp}}</div>
                 <div class="likes">&#10084; {{ post.likes}}</div>
             </div>
-        {% endfor %}
+            {% endfor %}
         {% include "network/pagination.html" %}
     </div>
 {% endblock %}
