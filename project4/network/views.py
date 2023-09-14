@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
-from .models import User, Post, Following
+from .models import User, Post, Following, Like
 from .forms import PostForm
 
 
@@ -149,3 +149,20 @@ def edit_view(request, post_id):
     # Retrieve current text of the post 
     post = Post.objects.get(pk = post_id)
     return JsonResponse(post.serialize())
+
+# @login_required
+# def like(request, post_id):
+#     post = Post.objects.get(pk=post_id)
+#     like = Like(
+#         liker=request.user,
+#         post_id=post_id
+#     )
+#     like.save()
+#     return HttpResponseRedirect(reverse("view_profile"))
+
+# @login_required
+# def unlike(request, post_id):
+#     post = User.objects.get(pk=post_id)
+#     follow = Following.objects.filter(liker=request.user, followed_users=profile_user)
+#     follow.delete()
+#     return HttpResponseRedirect(reverse("view_profile"))
