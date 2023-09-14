@@ -148,9 +148,9 @@ def following(request):
 def edit(request, post_id):
     # Retrieve current text of the post 
     if request.method == "POST":
-        new_text = request.POST.get("post_text")
-        post = Post.objects.get(pk=post_id, user=request.user)
-        post.text = new_text
+        data = json.loads(request.body)
+        post = Post.objects.get(pk=post_id)
+        post.text = data["post_text"]
         post.save()
         return JsonResponse({"text": post.text})
 

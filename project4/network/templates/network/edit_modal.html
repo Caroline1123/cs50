@@ -1,5 +1,4 @@
 {% block contents %}
-
 <div class="modal fade" id="EditModal{{post.id}}" tabindex="-1" aria-labelledby="EditModal{{post.id}}_label" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -9,11 +8,11 @@
       </div>
       <div class="modal-body">
         <label for="modal-post" class="form-label">Modify contents:</label>
-        <textarea rows="8" id="modal-post" class="form-control">{{post.text}}</textarea>
+        <textarea rows="8" id="modal-post{{post.id}}" class="form-control">{{post.text}}</textarea>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="saveChanges">Save changes</button>
+        <button type="button" class="btn btn-primary" id="saveChanges" onclick="editPost({{post.id}})">Save changes</button>
       </div>
     </div>
   </div>
