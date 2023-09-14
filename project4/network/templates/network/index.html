@@ -18,12 +18,10 @@
             <div id = post-details>
                 <a href="{% url 'view_profile' post.user.id %}"><div class="username">{{ post.user.username}}</div></a>
                 {% if request.user == post.user %}
-                    <a href="{% url 'edit_view' post.id %}">
-                        <p data-bs-toggle="modal" data-bs-target="#EditModal" data-post-id="{{post.id}}" data-post-content="{{ post.text }}">
-                            Edit
-                        </p>
-                    </a>
-                    {% include "network/edit.html" %}
+                    <p id="editMode" class="text-primary" data-bs-toggle="modal" data-bs-target="#EditModal{{post.id}}">
+                        Edit
+                    </p>
+                    {% include "network/edit_modal.html" %}
                 {% endif %}
                 <div class="text">{{ post.text|linebreaks}}</div>
                 <div class="timestamp">{{ post.timestamp}}</div>

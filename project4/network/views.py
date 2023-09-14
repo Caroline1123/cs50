@@ -145,10 +145,14 @@ def following(request):
         "form":PostForm,
     })
 
-def edit_view(request, post_id):
+def edit(request, post_id):
     # Retrieve current text of the post 
-    post = Post.objects.get(pk = post_id)
-    return JsonResponse(post.serialize())
+    if request.method == "POST":
+        new_text = request.POST.get("post_text")
+        post = Post.objects.get(pk=post_id, user=request.user)
+        post.text = new_text
+        post.save()
+        return JsonResponse({"text": post.text})
 
 # @login_required
 # def like(request, post_id):

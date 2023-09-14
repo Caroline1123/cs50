@@ -2,25 +2,31 @@
 
 {% block body %}
     <h1>{{profile_user.username}}</h1>
-    <div>{{followers}} Follower(s) | {{following}} Following</div>
+    <div class="my-3">
+        <div class="d-inline p-2 bg-primary-subtle text-emphasis-primary rounded">{{followers}} Follower(s)</div>
+        <div class="d-inline p-2 bg-primary-subtle text-emphasis-primary rounded">{{following}} Following</div>
+    </div>
     {% if request.user.is_authenticated and request.user != profile_user %}
         {% if not is_following %}
-            <a href="{% url 'follow' profile_user.id %}">Follow</a>
+            <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{% url 'follow' profile_user.id %}">Follow</a>
         {% else %}
-           <a href="{% url 'unfollow' profile_user.id %}">Unfollow</a>
+            <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{% url 'unfollow' profile_user.id %}">Unfollow</a>
         {% endif %}
     {% endif %}
     {% for post in page_obj %}
     <div id = post-details>
         <div class="username">{{ post.user.username}}</div>
         {% if request.user == post.user %}
-            <div id="EditModal">Edit</div> 
+        <p id="editMode" class="text-primary" data-bs-toggle="modal" data-bs-target="#EditModal{{post.id}}">
+            Edit
+        </p>
+        {% include "network/edit.html" %}
         {% endif %}
         <div class="text">{{ post.text|linebreaks}}</div>
         <div class="timestamp">{{ post.timestamp}}</div>
         <div class="likes">&#10084; {{ post.likes}}</div>
     </div>
     {% endfor %}
-    {% include "network/edit.html" %}
+    {% include "network/edit_modal.html" %}
     {% include "network/pagination.html" %}
 {% endblock %}
