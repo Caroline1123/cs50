@@ -19,19 +19,6 @@ function editPost(postId) {
     })
     .then(response => response.json())
     .then(result => {
-        document.getElementById(`text${postId}`).innerHTML = result.text;
-        
-        // on every modal change state like in hidden modal
-        modal.classList.remove('show');
-        modal.setAttribute('aria-hidden', 'true');
-        modal.setAttribute('style', 'display: none');
-    
-        // get modal backdrops
-        const modalsBackdrops = document.getElementsByClassName('modal-backdrop');
-    
-        // remove every modal backdrop
-        for(let i=0; i < modalsBackdrops.length; i++) {
-            document.body.removeChild(modalsBackdrops[i]);
-        }
+        document.getElementById(`text${postId}`).innerText = result.text;
     })
 }
