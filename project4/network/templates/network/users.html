@@ -17,10 +17,10 @@
     <div id = post-details>
         <div class="username">{{ post.user.username}}</div>
         {% if request.user == post.user %}
-        <p id="editMode" class="text-primary" data-bs-toggle="modal" data-bs-target="#EditModal{{post.id}}">
+        <p id="editMode" class="text-primary d-inline" data-bs-toggle="modal" data-bs-target="#EditModal{{post.id}}">
             Edit
         </p>
-        {% include "network/edit.html" %}
+        {% include "network/edit_modal.html" %}
         {% endif %}
         <div class="text">{{ post.text|linebreaks}}</div>
         <div class="timestamp">{{ post.timestamp}}</div>

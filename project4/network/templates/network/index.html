@@ -18,14 +18,21 @@
             <div id = post-details>
                 <a href="{% url 'view_profile' post.user.id %}"><div class="username">{{ post.user.username}}</div></a>
                 {% if request.user == post.user %}
-                    <p id="editMode" class="text-primary" data-bs-toggle="modal" data-bs-target="#EditModal{{post.id}}">
+                    <p id="editMode" class="text-primary d-inline" data-bs-toggle="modal" data-bs-target="#EditModal{{post.id}}">
                         Edit
                     </p>
                     {% include "network/edit_modal.html" %}
                 {% endif %}
                 <div class="text" id="text{{post.id}}">{{ post.text|linebreaks}}</div>
                 <div class="timestamp">{{ post.timestamp}}</div>
-                <div class="likes">&#10084;{{ post.likes}}</div>
+                <div class="likes">&#10084; {{ post.likes.count }} </div>
+                {% if post_likes|index:forloop.counter0 %}
+                    {% if liked %}
+                        <a href="{% url 'like' post.id %}">Unlike</a>
+                    {% else %}
+                        <a href="{% url 'like' post.id %}">Like</a>
+                    {% endif %}
+                {% endif %}
             </div>
             {% endfor %}
         {% include "network/pagination.html" %}
