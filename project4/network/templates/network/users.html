@@ -1,4 +1,5 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
     <h1>{{profile_user.username}}</h1>
@@ -24,7 +25,22 @@
         {% endif %}
         <div class="text">{{ post.text|linebreaks}}</div>
         <div class="timestamp">{{ post.timestamp}}</div>
-        <div class="likes">&#10084; {{ post.likes}}</div>
+        <div class="likes">&#10084; 
+            <div id="like_count{{post.id}}" class="d-inline">
+                {{ post.likes.count }}
+            </div>
+            {% if request.user != post.user %}
+                {% if post.id in post_liked %}
+                    <p class="d-inline px-4" id="like{{post.id}}" onclick="updateLikes({{post.id}},{{post_likes}})">
+                        <img src="{% static '/images/thumbs-down.png' %}" class="thumbs">
+                    </p>
+                {% else %}
+                    <p class="d-inline px-4" id="like{{post.id}}" onclick="updateLikes({{post.id}},{{post_likes}})">
+                        <img src="{% static '/images/thumbs-up.png' %}" class="thumbs">
+                    </p>
+                {% endif %}
+            {% endif %}
+        </div>
     </div>
     {% endfor %}
     {% include "network/edit_modal.html" %}

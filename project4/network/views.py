@@ -15,13 +15,11 @@ from .forms import PostForm
 def index(request):
     # Retrieve all posts and order them by date
     posts = Post.objects.all().order_by("-timestamp").all()
-    post_likes  = []
+    post_liked  = []
     for post in posts: 
         if request.user.is_authenticated: 
-            is_liking = post.likes.filter(liker = request.user).exists()
-            post_likes.append(is_liking)
-        else: 
-            post_likes.append(False)
+            user_likes = Like.objects.filter(liker = request.user).values_list("post_id", flat=True)
+            post_liked = list(user_likes)
     # Show 10 posts per page
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
@@ -29,7 +27,7 @@ def index(request):
     return render(request, "network/index.html", {
         "form": PostForm,
         "page_obj" : page_obj,
-        "post_likes" : post_likes,
+        "post_liked" : post_liked,
     })
 
 def login_view(request):
@@ -165,10 +163,14 @@ def edit(request, post_id):
 @login_required
 def like(request, post_id):
     post = Post.objects.get(pk=post_id)
+    new_text = "Like"
     # if like object already exists, remove the object. Else, add the like to the DB
     if Like.objects.filter(liker=request.user, post=post).exists():
         Like.objects.filter(liker=request.user, post=post).delete()
     else:
         Like.objects.create(liker=request.user, post=post)
+        new_text = "Unlike"
     # TO DO : return something... 
-    return HttpResponseRedirect(reverse("index"))
+    return JsonResponse({"newText": new_text,
+                         "likes_count": Like.objects.filter(post=post).count()
+                         })

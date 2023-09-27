@@ -22,4 +22,3 @@ class Following(models.Model):
 class Like(models.Model):
     liker = models.ForeignKey(User, on_delete=models.CASCADE, related_name="likes")
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes")
-

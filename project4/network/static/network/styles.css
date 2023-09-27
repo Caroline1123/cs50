@@ -26,3 +26,7 @@ body {
     color:rgb(161, 161, 161)
 }
 
+.thumbs {
+    height: 20px;
+    width : 20px;
+}

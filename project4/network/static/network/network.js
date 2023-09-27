@@ -7,9 +7,6 @@ function getCookie(name) {
 function editPost(postId) {
     const NewText = document.getElementById(`modal-post${postId}`).value;
     const modal = document.getElementById(`EditModal${postId}`);
-    console.log(NewText);
-    console.log(postId);
-    console.log(modal);
     fetch(`/edit/${postId}`, {
         method: "POST",
         headers: {"Content-type": "application/json", "X-CSRFToken": getCookie("csrftoken")},
@@ -22,3 +19,19 @@ function editPost(postId) {
         document.getElementById(`text${postId}`).innerText = result.text;
     })
 }
+
+function updateLikes(postId, likesList) {
+    const likeLink = document.getElementById(`like${postId}`);
+    const likeCount = document.getElementById(`like_count${postId}`);
+    fetch(`/like/${postId}`)
+    .then(response => response.json())
+    .then(result => {
+        likeCount.innerText = result['likes_count'];
+        if (result["newText"] == "Unlike") {
+            likeLink.innerHTML = `<img src="static/images/thumbs-down.png" class="thumbs">`
+        }
+        else {
+            likeLink.innerHTML = `<img src="static/images/thumbs-up.png" class="thumbs">`
+        }
+    })
+    }
