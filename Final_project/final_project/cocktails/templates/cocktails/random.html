@@ -1,0 +1,45 @@
+{% extends 'cocktails/layout.html' %}
+
+
+{% block body %}
+
+<div class="container-fluid text-center">
+
+    <div class="mb-3">
+        <a class="text-center" id="randomButton" href="{% url 'random_recipe' %}"><button class="btn btn-secondary"> Get Random Recipe</button></a>
+    </div>
+    {% if random %}
+    <h1>{{random.strDrink}} </h1>
+    <div>
+        <img src="{{random.strDrinkThumb}}" class="cocktail-img mb-3" alt="{{random.strDrink}}">
+    </div>
+    <div class="mb-3">
+        <h3>Ingredients</h3>
+        {% for ingredient, measure in ingredients.items %}
+        <div class="row justify-content-center">
+            <div class="col-2  text-end">
+                {% if measure is not None %}
+                    {{measure}}
+                {% endif %}
+            </div>
+            <div class="col-2 text-start ">
+                {{ingredient}}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <h3>Preparation</h3>
+                {{ random.strInstructions}}
+            </div>
+        </div>
+    </div>
+    <div>
+        <h3>Best served in</h3>
+        {{random.strGlass}}
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 
