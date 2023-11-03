@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
 
     const saveButton = document.getElementById("saveButton");
-    const modal =  new bootstrap.Modal(document.getElementById("NewsletterModal"));
     saveButton.addEventListener('click', checkMail);
 })
 
@@ -25,8 +24,8 @@ function checkMail() {
         const successBox = document.getElementById("successAlert");
         successBox.innerText = "Successfully registered to the newsletter";
         successBox.style.display = "block";
-        modal.hide();
-        fadeOut(successBox)
+        $("#NewsletterModal").modal("hide");
+        fadeOut(successBox);
     }
     else {
         const ErrorBox = document.getElementById("alertBox");

@@ -17,59 +17,61 @@
         <title>{% block title %} Cocktails {% endblock %}</title>
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg bg-dark border-bottom border-body mb-5" data-bs-theme="dark">
-            <div class="container-fluid">
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <a class="navbar-brand" href="{% url 'index' %}"><img class="brand" src="{% static 'cocktails/575631.svg' %}"></a>
-              <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{% url 'all' %}">All Cocktails</a>
-                  </li>
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Find Recipe
-                    </a>
-                    <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="{% url 'search' %}">By Name</a></li>
-                      <li><a class="dropdown-item" href="{% url 'ingredient' %}">By Ingredient</a></li>
-                      <li><a class="dropdown-item" href="{% url 'random' %}">Random</a></li>
-                    </ul>
-                  </li>
-                  <span class="navbar-text text-success" data-bs-toggle="modal" data-bs-target="#NewsletterModal">
-                    Newsletter
-                  </span>
+      <nav class="navbar navbar-expand-lg bg-dark border-bottom border-body" data-bs-theme="dark">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <a class="navbar-brand" href="{% url 'index' %}"><img class="brand" src="{% static 'cocktails/575631.svg' %}"></a>
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="{% url 'all' %}">All Cocktails</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Find Recipe
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'search' %}">By Name</a></li>
+                  <li><a class="dropdown-item" href="{% url 'ingredient' %}">By Ingredient</a></li>
+                  <li><a class="dropdown-item" href="{% url 'random' %}">Random</a></li>
                 </ul>
-              </div>
+              </li>
+              <span class="navbar-text text-success" data-bs-toggle="modal" data-bs-target="#NewsletterModal">
+                Newsletter
+              </span>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="modal fade" id="NewsletterModal" tabindex="-1" aria-labelledby="NewsletterModal" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fw-bold text-black" id="NewsletterModalLabel">Stay tuned!</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </nav>
-        <div class="modal fade" id="NewsletterModal" tabindex="-1" aria-labelledby="NewsletterModal" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fw-bold text-black" id="NewsletterModalLabel">Stay tuned!</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div id="alertBox" class="alert alert-danger"></div>
-              <div class="modal-body text-black bg-white">
-                Sign up for our newsletter:
-                <input type="email" class="form-control mt-2" id="newsLetterMail" placeholder="name@example.com">
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="saveButton" class="btn btn-primary">Sign up</button>
-              </div>
+            <div id="alertBox" class="alert alert-danger"></div>
+            <div class="modal-body text-black bg-white">
+              Sign up for our newsletter:
+              <input type="email" class="form-control mt-2" id="newsLetterMail" placeholder="name@example.com">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" id="saveButton" class="btn btn-primary">Sign up</button>
             </div>
           </div>
         </div>
-        <div id="successAlert" class="alert alert-success"></div>
+      </div>
+      <div id="successAlert" class="alert alert-success"></div>
+      <div class="mt-5 container-fluid">
         {% block body %}
         {% endblock %}
+      </div>
     </body>
     <script src="{% static 'cocktails/modal.js' %}"></script>
 </html>
