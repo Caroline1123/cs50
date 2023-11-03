@@ -1,0 +1,41 @@
+{% extends "cocktails/layout.html" %}
+
+{% block body %}
+
+<div class="container-fluid text-center">
+    <div id = "recipe">
+        <h1 id="cocktailName">{{recipe.strDrink}}</h1>
+        <div>
+            <img id ="cocktailImage" src="{{recipe.strDrinkThumb}}" class="cocktail-img mb-3" alt="Cocktail image">
+        </div>
+        <div class="mb-3">
+            <h3>Ingredients</h3>
+            <div class="container-fluid" id = "ingredients">
+                {% for ingredient in ingredients %}
+                    <div class="row justify-content-center">
+                        <div class="col-2  text-end">
+                            {{ingredient.1}}
+                        </div>
+                        <div class="col-2 text-start ">
+                            {{ ingredient.0}}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="row justify-content-center">
+                <div class="col-6">
+                    <h3>Preparation</h3>
+                    <p id = "preparation">{{recipe.strInstructions}}</p>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h3>Best served in</h3>
+            <p id="glass">{{recipe.strGlass}} </p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,81 +1,84 @@
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.db import IntegrityError
+import json
 import requests
-
-from .models import User
-
 
 # Create your views here.
 def index(request):
     return render(request, "cocktails/index.html")
 
-def login_view(request):
-    if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect(reverse("index"))
-        else:
-            return render(request, "cocktails/login.html", {
-                "message": "Invalid username and/or password."
-            })
-    else:
-        return render(request, "cocktails/login.html")
-    
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect(reverse("index"))
-
-def register(request):
-    if request.method == "POST":
-        username = request.POST["username"]
-        email = request.POST["email"]
-        password = request.POST["password"]
-        confirmation = request.POST["confirmation"]
-
-        if confirmation != password:
-            return render(request, "cocktails/register.html", {
-                "message" : "Passwords must match."
-            })
-
-        try:
-            user = User.objects.create_user(username, email, password)
-            user.save()
-        except IntegrityError:
-            return render(request, "cocktails/register.html", {
-                "message" : "Username already in use."
-            })
-        login(request,user)
-        return HttpResponseRedirect(reverse("index"))
-    
-    else:
-        return render(request, "cocktails/register.html")
-    
 def random(request):
     return render(request, "cocktails/random.html")
     
-def random_recipe(request):
-    response = requests.get('https://www.thecocktaildb.com/api/json/v1/1/random.php')
-    if response.status_code == 200 :
-        random_recipe = response.json().get('drinks', [])[0]
-        ingredients = {}
-        for i in range(1, 16):
-            ingredient_key = f'strIngredient{i}'
-            measure_key = f'strMeasure{i}'
-            ingredient = random_recipe.get(ingredient_key)
-            measure = random_recipe.get(measure_key)
-            if ingredient:
-                ingredients[ingredient] = measure
-        return render(request, "cocktails/random.html", {
-            "random": random_recipe,
-            "ingredients": ingredients,
-            })
-    else :
-        # TODO: change error 
-        return HttpResponse("Error")
+def name_search(request):
+    return render(request, "cocktails/search.html")
+
+def ingredient_search(request):
+    return render(request, "cocktails/ingredient.html")
+
+def view_results(request):
+    if request.method == "POST":
+        name = request.POST.get("cocktail_name")
+        ingredient = request.POST.get("cocktail_ingredient")
+    if not name and not ingredient:
+        name = ''
+        ingredient = ''
+    # fetch results from API
+    if ingredient:
+        try:
+            response = requests.get(f'https://www.thecocktaildb.com/api/json/v1/1/filter.php?i={ingredient}')
+            response.raise_for_status()
+            results = response.json()
+        except (json.decoder.JSONDecodeError, requests.exceptions.RequestException):
+            return render(request, "cocktails/results.html", {
+                'ingredient': ingredient,
+                'results': None,
+                })
+    else:
+        response = requests.get(f'https://www.thecocktaildb.com/api/json/v1/1/search.php?s={name}')
+        results = response.json()
+     
+    results = results["drinks"]
+
+    return render(request, "cocktails/results.html", {
+        'ingredient' : ingredient,
+        'name' : name, 
+        'results' : results,
+    })
+
+def recipe(request, cocktail_id):
+    results = requests.get(f'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i={cocktail_id}')
+    results = results.json()
+    recipe = results["drinks"][0]
+    ingredients = []
+    for i in range(1,16):
+        name = recipe.get(f'strIngredient{i}')
+        quantity = recipe.get(f'strMeasure{i}')
+        if name and quantity:
+            ingredients.append([name, quantity])
+    return render(request, "cocktails/recipe.html", {
+                      "recipe": recipe,
+                      "ingredients": ingredients,
+                  })
+
+def all_cocktails(request):
+    alpha = []
+    for i in range(26):
+        alpha.append(chr(ord('A')+ i))
+    return render(request, "cocktails/all_cocktails.html", {
+        "alpha" : alpha,
+    })
+
+def letter_find(request, letter):
+    response = requests.get(f'https://www.thecocktaildb.com/api/json/v1/1/search.php?f={letter}')
+    results = response.json()
+    results = results["drinks"]
+    alpha = []
+    for i in range(26):
+        alpha.append(chr(ord('A')+ i))
+    return render(request, "cocktails/all_cocktails.html", {
+        "alpha" : alpha,
+        "results": results,
+        "al":letter
+    })

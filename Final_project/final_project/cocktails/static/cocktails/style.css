@@ -29,9 +29,33 @@ body {
 
 .welcome2 {
     font-size:2em;
+    position:absolute;
+    right:10%;
+    left:10%;
+    top:50%;
 }
 
 .cocktail-img {
     width:200px;
     height:200px;
+}
+
+#alertBox {
+    display: none;
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
+
+#alertBox.fade-out {
+    opacity: 0;
+}
+
+#successAlert {
+    display: none;
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
+
+#successAlert.fade-out {
+    opacity: 0;
 }

@@ -1,0 +1,36 @@
+{% extends "cocktails/layout.html" %}
+{% load static %}
+
+{% block body %}
+<p class="mx-5 fs-2 fw-light">Select first letter: </p>
+<p class="text-center fw-lighter fs-4">
+{% for letter in alpha %}
+    {% if letter == "Z" %}
+        <a class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{% url 'letter' letter %}">{{letter}}</a>
+    {% else %}
+        <a class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{% url 'letter' letter %}">{{letter}}</a> /
+    {% endif %}
+{% endfor %}
+</p>
+
+{% if results %}
+    <br>
+    <div class="container-fluid">
+        <div class="flex-row w-100 m-0 text-center">
+            {% for result in results %}
+            <div class="card text-white bg-dark w-25 col-auto d-inline-flex m-4">
+                <img class="card-img-top" src="{{result.strDrinkThumb}}" alt="{{result.strDrink}}">
+                <div class="card-body">
+                    <h5 class="card-title">{{result.strDrink}}</h5>
+                    {% if result.strTags != None %}
+                        <p class="card-text">{{result.strTags}}</p>
+                    {% endif %}
+                    <a href="{% url 'recipe' result.idDrink %}" class="btn btn-secondary">View recipe</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "cocktails/layout.html" %}
+
+{% block body %}
+    <form class="d-flex col-6 mx-3" role="search" action="{% url 'results' %}" method="post">
+        {% csrf_token %}
+        <input class="form-control me-2" type="search" placeholder="Cocktail Name" aria-label="Search" name="cocktail_name">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+{% endblock %}

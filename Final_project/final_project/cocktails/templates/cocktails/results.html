@@ -1,0 +1,30 @@
+{% extends 'cocktails/layout.html' %}
+
+{% block body %}
+    {% if name %}
+    <h2 class="mx-4">Results for '{{name}}' :</h2>
+    {% elif ingredient %}
+    <h2 class="mx-4">Results for '{{ingredient}}' :</h2>
+    {%endif%}
+    <br>
+    {% if not results %}
+        <p class="mx-5">No results found</p>
+    {% endif %}
+    <br>
+    <div class="container-fluid">
+        <div class="flex-row w-100 m-0 text-center">
+            {% for result in results %}
+            <div class="card text-white bg-dark w-25 col-auto d-inline-flex m-4">
+                <img class="card-img-top" src="{{result.strDrinkThumb}}" alt="{{result.strDrink}}">
+                <div class="card-body">
+                    <h5 class="card-title">{{result.strDrink}}</h5>
+                    {% if result.strTags != None %}
+                        <p class="card-text">{{result.strTags}}</p>
+                    {% endif %}
+                    <a href="{% url 'recipe' result.idDrink %}" class="btn btn-secondary">View recipe</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

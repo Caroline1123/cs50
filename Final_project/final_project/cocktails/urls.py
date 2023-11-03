@@ -3,9 +3,12 @@ from django.urls import path
 
 urlpatterns = [
     path("", views.index, name = "index"),
-    path("login", views.login_view, name = "login"),
-    path("logout", views.logout_view, name = "logout"),
-    path("register", views.register, name = "register"),
+
     path("random", views.random, name="random"),
-    path("random_recipe", views.random_recipe, name="random_recipe")
+    path("search", views.name_search, name="search"),
+    path("all", views.all_cocktails, name="all"),
+    path("ingredient", views.ingredient_search, name="ingredient"),
+    path("view_results", views.view_results, name="results"),
+    path("recipe/<int:cocktail_id>", views.recipe, name="recipe"),
+    path("letter/<str:letter>", views.letter_find, name="letter"),
 ]
